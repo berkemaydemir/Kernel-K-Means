@@ -4,12 +4,12 @@ import numpy as np
 
 
 
-# Veri kümesi oluştur
+# Create dataset
 def make_data():
     return datasets.make_circles(n_samples=200, factor=0.5, noise=0.05)
 
 
-# veri kümesi işleme
+# Dataset processing
 def data_processing(data):
     data_ = list(data[0])
     data_list = []
@@ -20,7 +20,7 @@ def data_processing(data):
     return data_list, result
 
 
-# Veri seti göster
+# Show dataset
 def show_data(data, result):
     for d in data:
         if result[data.index(d)] == 0:
@@ -30,8 +30,8 @@ def show_data(data, result):
     plt.show()
 
 
-# Ham 2B veri noktalarını 3B ile eşleyin
-# Yeni bir boyut tanıtın, veri noktası ile uzak nokta arasındaki mesafe, dönüştürme: (x, y) (x, sqrt(x**2+y**2), y)'ye dönüştürülür
+# Map raw 2D data points to 3D
+# Introduce a new dimension, distance from data point to remote point, conversion: (x, y) converted to (x, sqrt(x**2+y**2), y)
 def axes3d(data):
     new_data_list = []
     for d in data:
@@ -42,7 +42,7 @@ def axes3d(data):
     return new_data_list
 
 
-# 3D görüntü oluşturma
+# 3D rendering
 def show_data_3d(data, result):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -54,7 +54,7 @@ def show_data_3d(data, result):
     plt.show()
 
 
-# 3D yinelemeli görüntü oluşturma
+# 3D iterative rendering
 def show_data_iter_3d(data, center):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -74,7 +74,7 @@ def show_data_iter_3d(data, center):
     plt.show()
 
 
-# K-ortalama sınıf merkezlerinin seçimi
+# Selection of K-mean class centers
 def select_centre(data, k):
     center_list = []
     for i in range(k):
@@ -91,13 +91,13 @@ def k_means(data, center):
     for d in data:
         dis_list = []
         for c in center:
-            # Mesafe ölçümü için Öklid mesafesi
+            # Euclidean distance for distance measurement
             dis = np.sqrt(np.sum(np.square(np.array(d)-np.array(c))))
             dis_list.append(dis)
         cluster_result.append(dis_list.index(min(dis_list)))
         class_result[dis_list.index(min(dis_list))].append(d)
 
-    # Sınıf Merkezini Güncelle
+    # Update Class Center
     for cls in class_result:
         x = 0
         y = 0
@@ -117,7 +117,7 @@ def k_means(data, center):
     return cluster_result, class_result, new_center
 
 
-# yineleme
+# Reiteration
 def iter_(data, center, iter):
     cluster_result, class_result, new_center = k_means(data, center)
     for i in range(iter-1):
@@ -127,21 +127,21 @@ def iter_(data, center, iter):
 
 
 if __name__ == '__main__':
-    # Veri kümesi oluştur
+    # Create dataset
     datas = make_data()
     # print(datas)
-    # veri işleme
+    # Data processing
     data, result = data_processing(datas)
     # print(data, result)
-    # Doğru verileri gösteren bir küme diyagramı
+    # A cluster diagram showing the correct data
     show_data(data, result)
-    # Çekirdek koordinat dönüşümünü gerçekleştir
+    # Perform core coordinate transformation
     data_3d = axes3d(data)
     # print(data_3d)
-    # 3D resimler çiz
+    # draw 3D pictures
     show_data_3d(data_3d, result)
 
-    # k-means için sınıf merkezi noktalarını seçin
+    # select class center points for k-means
     centers = select_centre(data_3d, 2)
 
     cluster_results, class_results, new_centers = iter_(data_3d, centers, 10)
